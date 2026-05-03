@@ -2,6 +2,7 @@ package com.rohan.talentcopilot.controller;
 
 import com.rohan.talentcopilot.dto.CreateUserProfileRequest;
 import com.rohan.talentcopilot.dto.UpdateUserProfileRequest;
+import com.rohan.talentcopilot.model.ProfileStatus;
 import com.rohan.talentcopilot.model.UserProfile;
 import com.rohan.talentcopilot.service.UserProfileService;
 import org.springframework.data.domain.Page;
@@ -77,5 +78,13 @@ public class UserProfileController {
             @RequestParam(defaultValue = "asc") String direction
     ) {
         return userProfileService.getProfilesByVisaTypePaged(visaType, page, size, sortBy, direction);
+    }
+
+    @PatchMapping("/{id}/status")
+    public UserProfile updateProfileStatus(
+            @PathVariable Long id,
+            @RequestParam ProfileStatus status
+    ) {
+        return userProfileService.updateProfileStatus(id, status);
     }
 }

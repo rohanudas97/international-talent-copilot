@@ -2,6 +2,7 @@ package com.rohan.talentcopilot.service;
 
 import com.rohan.talentcopilot.dto.CreateUserProfileRequest;
 import com.rohan.talentcopilot.dto.UpdateUserProfileRequest;
+import com.rohan.talentcopilot.model.ProfileStatus;
 import com.rohan.talentcopilot.model.UserProfile;
 import com.rohan.talentcopilot.repository.UserProfileRepository;
 import org.springframework.data.domain.Sort;
@@ -33,7 +34,7 @@ public class UserProfileService {
         profile.setVisaType(request.getVisaType());
         profile.setGraduationDate(request.getGraduationDate());
         profile.setTargetRole(request.getTargetRole());
-
+        profile.setStatus(ProfileStatus.ACTIVE);
         return userProfileRepository.save(profile);
     }
 
@@ -105,5 +106,15 @@ public class UserProfileService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         return userProfileRepository.findByVisaTypeIgnoreCase(visaType, pageable);
+    }
+
+    //To update profile status
+    public UserProfile updateProfileStatus(Long id, ProfileStatus status) {
+        UserProfile profile = userProfileRepository.findById(id)
+                .orElseThrow(() -> new ProfileNotFoundException("Profile not found with id: " + id));
+
+        profile.setStatus(status);
+
+        return userProfileRepository.save(profile);
     }
 }

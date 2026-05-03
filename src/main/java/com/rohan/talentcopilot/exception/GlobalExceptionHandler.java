@@ -23,6 +23,7 @@ public class GlobalExceptionHandler {
 
         return errors;
     }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ProfileNotFoundException.class)
     public Map<String, String> handleProfileNotFound(ProfileNotFoundException exception) {
@@ -30,6 +31,7 @@ public class GlobalExceptionHandler {
         error.put("message", exception.getMessage());
         return error;
     }
+
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(DuplicateEmailException.class)
     public Map<String, String> handleDuplicateEmail(DuplicateEmailException exception) {
