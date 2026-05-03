@@ -9,5 +9,4 @@ public class InternationalTalentCopilotApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(InternationalTalentCopilotApplication.class, args);
 	}
-
 }

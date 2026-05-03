@@ -27,10 +27,7 @@ public class UserProfileService {
         return userProfileRepository.save(profile);
     }
     public UserProfile getProfileById(Long id) {
-        UserProfile profile = userProfileRepository.findById(id);
-        if (profile == null) {
-            throw new ProfileNotFoundException("Profile not found with id: " + id);
-        }
-        return profile;
+        return userProfileRepository.findById(id)
+                .orElseThrow(() -> new ProfileNotFoundException("Profile not found with id: " + id));
     }
 }
