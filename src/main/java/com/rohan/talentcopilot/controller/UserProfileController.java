@@ -4,6 +4,7 @@ import com.rohan.talentcopilot.dto.CreateUserProfileRequest;
 import com.rohan.talentcopilot.model.UserProfile;
 import com.rohan.talentcopilot.service.UserProfileService;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/profile")
@@ -16,7 +17,12 @@ public class UserProfileController {
     }
 
     @PostMapping
-    public UserProfile createProfile(@RequestBody CreateUserProfileRequest request) {
+    public UserProfile createProfile(@Valid @RequestBody CreateUserProfileRequest request) {
         return userProfileService.createProfile(request);
+    }
+
+    @GetMapping("/{id}")
+    public UserProfile getProfileById(@PathVariable Long id) {
+        return userProfileService.getProfileById(id);
     }
 }
