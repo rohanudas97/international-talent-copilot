@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import java.time.LocalDate;
+import jakarta.persistence.Column;
 
 @Data
 @NoArgsConstructor
@@ -20,6 +21,7 @@ public class UserProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fullName;
+    @Column(unique = true, nullable = false)
     private String email;
     private String visaType;
     private LocalDate graduationDate;
