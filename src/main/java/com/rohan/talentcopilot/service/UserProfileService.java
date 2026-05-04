@@ -44,7 +44,7 @@ public class UserProfileService {
     }
 
     public List<UserProfile> getAllProfiles() {
-        return userProfileRepository.findAll();
+        return userProfileRepository.findByStatus(ProfileStatus.ACTIVE);
     }
 
     //To update user profile

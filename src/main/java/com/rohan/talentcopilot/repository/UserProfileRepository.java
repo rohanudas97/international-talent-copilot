@@ -1,5 +1,6 @@
 package com.rohan.talentcopilot.repository;
 
+import com.rohan.talentcopilot.model.ProfileStatus;
 import com.rohan.talentcopilot.model.UserProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,4 +14,5 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
     List<UserProfile> findByVisaTypeIgnoreCase(String visaType);
     Optional<UserProfile> findByEmailIgnoreCase(String email);
     Page<UserProfile> findByVisaTypeIgnoreCase(String visaType, Pageable pageable);
+    List<UserProfile> findByStatus(ProfileStatus status);
 }
