@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   Briefcase,
   CalendarDays,
   CheckCircle2,
   Globe2,
+  LogOut,
   Pencil,
   Search,
   Sparkles,
@@ -24,6 +26,7 @@ const emptyForm = {
 };
 
 export default function App() {
+  const navigate = useNavigate();
   const [profiles, setProfiles] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -67,6 +70,11 @@ export default function App() {
       ...form,
       [e.target.name]: e.target.value,
     });
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    navigate("/login");
   }
 
   function openCreateDrawer() {
@@ -134,12 +142,21 @@ export default function App() {
             </p>
           </div>
 
-          <button
-            onClick={openCreateDrawer}
-            className="rounded-2xl bg-white text-slate-950 px-5 py-3 font-semibold"
-          >
-            New Profile
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={openCreateDrawer}
+              className="rounded-2xl bg-white text-slate-950 px-5 py-3 font-semibold"
+            >
+              New Profile
+            </button>
+            <button
+              onClick={handleLogout}
+              className="rounded-2xl bg-red-600 text-white px-5 py-3 font-semibold flex items-center gap-2"
+            >
+              <LogOut size={18} />
+              Logout
+            </button>
+          </div>
         </header>
 
         <section className="grid md:grid-cols-3 gap-6">
