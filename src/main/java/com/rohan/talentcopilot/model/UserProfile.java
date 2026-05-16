@@ -17,6 +17,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import com.rohan.talentcopilot.model.ProfileStatus;
 import com.rohan.talentcopilot.entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
@@ -47,6 +48,7 @@ public class UserProfile {
     @Enumerated(EnumType.STRING)
     private ProfileStatus status;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

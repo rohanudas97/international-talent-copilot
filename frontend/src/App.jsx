@@ -27,6 +27,7 @@ const emptyForm = {
 
 export default function App() {
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
   const [profiles, setProfiles] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -44,8 +45,20 @@ export default function App() {
   const [form, setForm] = useState(emptyForm);
 
   useEffect(() => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     fetchProfiles();
-  }, [page, visaFilter, sortBy, direction]);
+  }, [page, visaFilter, sortBy, direction, token, navigate]);
+
+  function authConfig() {
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  }
 
   async function fetchProfiles() {
     try {
@@ -57,7 +70,7 @@ export default function App() {
         url = `${API_BASE}/filter?visaType=${visaFilter}&page=${page}&size=6&sortBy=${sortBy}&direction=${direction}`;
       }
 
-      const response = await axios.get(url);
+      const response = await axios.get(url, authConfig());
       setProfiles(response.data.content);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -100,9 +113,9 @@ export default function App() {
 
     try {
       if (editingProfile) {
-        await axios.put(`${API_BASE}/${editingProfile.id}`, form);
+        await axios.put(`${API_BASE}/${editingProfile.id}`, form, authConfig());
       } else {
-        await axios.post(API_BASE, form);
+        await axios.post(API_BASE, form, authConfig());
       }
 
       setDrawerOpen(false);
@@ -115,13 +128,13 @@ export default function App() {
   }
 
   async function handleDeleteConfirmed() {
-    await axios.delete(`${API_BASE}/${profileToDelete.id}`);
+    await axios.delete(`${API_BASE}/${profileToDelete.id}`, authConfig());
     setProfileToDelete(null);
     fetchProfiles();
   }
 
   async function handleStatusChange(id, status) {
-    await axios.patch(`${API_BASE}/${id}/status?status=${status}`);
+    await axios.patch(`${API_BASE}/${id}/status?status=${status}`, null, authConfig());
     fetchProfiles();
   }
 

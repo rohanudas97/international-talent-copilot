@@ -12,6 +12,7 @@ export default function Signup() {
     targetRole: "",
   });
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   function handleChange(e) {
@@ -20,7 +21,12 @@ export default function Signup() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (isSubmitting) {
+      return;
+    }
+
     setError("");
+    setIsSubmitting(true);
     try {
       // Create user account
       await axios.post("http://localhost:8080/auth/signup", {
@@ -28,6 +34,14 @@ export default function Signup() {
         email: form.email,
         password: form.password,
       });
+
+      const loginResponse = await axios.post("http://localhost:8080/auth/login", {
+        username: form.email,
+        password: form.password,
+      });
+
+      const token = loginResponse.data.token;
+      localStorage.setItem("token", token);
 
       // Create user profile
       await axios.post(
@@ -41,16 +55,16 @@ export default function Signup() {
         },
         {
           headers: {
-            Authorization: `Bearer ${form.email}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      // Auto-login
-      localStorage.setItem("token", form.email);
       navigate("/dashboard");
     } catch (error) {
       setError(error.response?.data?.message || "Signup failed");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -131,8 +145,11 @@ export default function Signup() {
               className="mt-1 w-full rounded-2xl bg-slate-900 border border-white/10 px-4 py-3 outline-none"
             />
           </div>
-          <button className="w-full rounded-2xl bg-blue-600 py-3 font-bold">
-            Sign Up
+          <button
+            disabled={isSubmitting}
+            className="w-full rounded-2xl bg-blue-600 py-3 font-bold disabled:opacity-60"
+          >
+            {isSubmitting ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
         <p className="text-center mt-4 text-slate-400">
@@ -142,4 +159,3 @@ export default function Signup() {
     </div>
   );
 }
-

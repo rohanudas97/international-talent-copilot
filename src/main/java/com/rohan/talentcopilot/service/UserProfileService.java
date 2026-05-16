@@ -147,4 +147,17 @@ public class UserProfileService {
 
         return userProfileRepository.save(profile);
     }
+
+    public UserProfile updateMyProfile(String email, UpdateUserProfileRequest request) {
+        UserProfile profile = userProfileRepository.findByUserEmail(email)
+                .orElseThrow(() -> new ProfileNotFoundException("Profile not found for user: " + email));
+
+        profile.setFullName(request.getFullName());
+        profile.setEmail(email);
+        profile.setVisaType(request.getVisaType());
+        profile.setGraduationDate(request.getGraduationDate());
+        profile.setTargetRole(request.getTargetRole());
+
+        return userProfileRepository.save(profile);
+    }
 }

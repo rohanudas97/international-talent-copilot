@@ -6,6 +6,7 @@ import com.rohan.talentcopilot.model.ProfileStatus;
 import com.rohan.talentcopilot.model.UserProfile;
 import com.rohan.talentcopilot.service.UserProfileService;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
@@ -89,24 +90,30 @@ public class UserProfileController {
     }
 
     @GetMapping("/me")
-    public UserProfile getMyProfile(@RequestHeader("Authorization") String authHeader) {
+    public UserProfile getMyProfile(Authentication authentication) {
 
-        String email = extractEmailFromAuthHeader(authHeader);
+        String email = authentication.getName();
 
         return userProfileService.getMyProfile(email);
     }
 
     @PostMapping("/me")
     public UserProfile createMyProfile(
-            @RequestHeader("Authorization") String authHeader,
+            Authentication authentication,
             @Valid @RequestBody CreateUserProfileRequest request
     ) {
-        String email = extractEmailFromAuthHeader(authHeader);
+        String email = authentication.getName();
 
         return userProfileService.createMyProfile(email, request);
     }
 
-    private String extractEmailFromAuthHeader(String authHeader) {
-        return authHeader.replace("Bearer ", "").trim();
+    @PutMapping("/me")
+    public UserProfile updateMyProfile(
+            Authentication authentication,
+            @Valid @RequestBody UpdateUserProfileRequest request
+    ) {
+        String email = authentication.getName();
+
+        return userProfileService.updateMyProfile(email, request);
     }
 }

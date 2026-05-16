@@ -6,6 +6,7 @@ import com.rohan.talentcopilot.dto.SignupRequest;
 import com.rohan.talentcopilot.entity.User;
 import com.rohan.talentcopilot.exception.DuplicateEmailException;
 import com.rohan.talentcopilot.repository.UserRepository;
+import com.rohan.talentcopilot.security.JwtService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,12 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public String signup(SignupRequest request) {
@@ -44,6 +47,6 @@ public class AuthService {
             throw new BadCredentialsException("Invalid email or password");
         }
 
-        return new LoginResponse(user.getEmail());
+        return new LoginResponse(jwtService.generateToken(user));
     }
 }
