@@ -15,4 +15,5 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
     Optional<UserProfile> findByEmailIgnoreCase(String email);
     Page<UserProfile> findByVisaTypeIgnoreCase(String visaType, Pageable pageable);
     List<UserProfile> findByStatus(ProfileStatus status);
+    Optional<UserProfile> findByUserEmail(String email);
 }

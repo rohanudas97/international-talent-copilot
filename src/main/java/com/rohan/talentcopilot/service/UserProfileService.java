@@ -2,9 +2,11 @@ package com.rohan.talentcopilot.service;
 
 import com.rohan.talentcopilot.dto.CreateUserProfileRequest;
 import com.rohan.talentcopilot.dto.UpdateUserProfileRequest;
+import com.rohan.talentcopilot.entity.User;
 import com.rohan.talentcopilot.model.ProfileStatus;
 import com.rohan.talentcopilot.model.UserProfile;
 import com.rohan.talentcopilot.repository.UserProfileRepository;
+import com.rohan.talentcopilot.repository.UserRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.rohan.talentcopilot.exception.ProfileNotFoundException;
@@ -18,9 +20,11 @@ import org.springframework.data.domain.Pageable;
 public class UserProfileService {
 
     private final UserProfileRepository userProfileRepository;
+    private final UserRepository userRepository;
 
-    public UserProfileService(UserProfileRepository userProfileRepository) {
+    public UserProfileService(UserProfileRepository userProfileRepository, UserRepository userRepository) {
         this.userProfileRepository = userProfileRepository;
+        this.userRepository = userRepository;
     }
 
     public UserProfile createProfile(CreateUserProfileRequest request) {
@@ -114,6 +118,32 @@ public class UserProfileService {
                 .orElseThrow(() -> new ProfileNotFoundException("Profile not found with id: " + id));
 
         profile.setStatus(status);
+
+        return userProfileRepository.save(profile);
+    }
+
+    public UserProfile getMyProfile(String email) {
+        return userProfileRepository.findByUserEmail(email)
+                .orElseThrow(() -> new ProfileNotFoundException("Profile not found for user: " + email));
+    }
+
+    public UserProfile createMyProfile(String email, CreateUserProfileRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (userProfileRepository.findByUserEmail(email).isPresent()) {
+            throw new DuplicateEmailException("Profile already exists for user");
+        }
+
+        UserProfile profile = new UserProfile();
+
+        profile.setFullName(request.getFullName());
+        profile.setEmail(user.getEmail());
+        profile.setVisaType(request.getVisaType());
+        profile.setGraduationDate(request.getGraduationDate());
+        profile.setTargetRole(request.getTargetRole());
+        profile.setStatus(ProfileStatus.ACTIVE);
+        profile.setUser(user);
 
         return userProfileRepository.save(profile);
     }

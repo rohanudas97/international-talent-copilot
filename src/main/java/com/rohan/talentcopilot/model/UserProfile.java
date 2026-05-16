@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import com.rohan.talentcopilot.model.ProfileStatus;
+import com.rohan.talentcopilot.entity.User;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
 @Data
 @NoArgsConstructor
@@ -43,4 +46,8 @@ public class UserProfile {
 
     @Enumerated(EnumType.STRING)
     private ProfileStatus status;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

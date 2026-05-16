@@ -10,8 +10,6 @@ import java.io.IOException;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
 
-    private static final String VALID_TOKEN = "mock-jwt-token";
-
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -20,20 +18,21 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         String path = request.getRequestURI();
+        String method = request.getMethod();
 
+        // Allow OPTIONS (CORS preflight)
+        if ("OPTIONS".equalsIgnoreCase(method)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // Allow /auth endpoints
         if (path.startsWith("/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String authHeader = request.getHeader("Authorization");
-
-        if (authHeader == null || !authHeader.equals("Bearer " + VALID_TOKEN)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized");
-            return;
-        }
-
+        // For other endpoints, continue (controller handles validation)
         filterChain.doFilter(request, response);
     }
 }

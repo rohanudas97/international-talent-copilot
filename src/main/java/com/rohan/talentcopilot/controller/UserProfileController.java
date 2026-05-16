@@ -87,4 +87,26 @@ public class UserProfileController {
     ) {
         return userProfileService.updateProfileStatus(id, status);
     }
+
+    @GetMapping("/me")
+    public UserProfile getMyProfile(@RequestHeader("Authorization") String authHeader) {
+
+        String email = extractEmailFromAuthHeader(authHeader);
+
+        return userProfileService.getMyProfile(email);
+    }
+
+    @PostMapping("/me")
+    public UserProfile createMyProfile(
+            @RequestHeader("Authorization") String authHeader,
+            @Valid @RequestBody CreateUserProfileRequest request
+    ) {
+        String email = extractEmailFromAuthHeader(authHeader);
+
+        return userProfileService.createMyProfile(email, request);
+    }
+
+    private String extractEmailFromAuthHeader(String authHeader) {
+        return authHeader.replace("Bearer ", "").trim();
+    }
 }
