@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Eye, EyeOff } from "lucide-react";
+
+const passwordRule =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
+const passwordHelp =
+  "Use at least 8 characters with uppercase, lowercase, number, and special character.";
 
 export default function Signup() {
   const [form, setForm] = useState({
@@ -13,6 +19,7 @@ export default function Signup() {
   });
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   function handleChange(e) {
@@ -26,6 +33,11 @@ export default function Signup() {
     }
 
     setError("");
+    if (!passwordRule.test(form.password)) {
+      setError(passwordHelp);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       // Create user account
@@ -98,14 +110,28 @@ export default function Signup() {
           </div>
           <div>
             <label className="text-sm text-slate-400">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              className="mt-1 w-full rounded-2xl bg-slate-900 border border-white/10 px-4 py-3 outline-none"
-            />
+            <div className="relative mt-1">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+                required
+                minLength={8}
+                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}"
+                title={passwordHelp}
+                className="w-full rounded-2xl bg-slate-900 border border-white/10 px-4 py-3 pr-12 outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+            <p className="mt-2 text-xs text-slate-500">{passwordHelp}</p>
           </div>
           <div>
             <label className="text-sm text-slate-400">Visa Type</label>
