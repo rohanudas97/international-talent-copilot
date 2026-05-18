@@ -23,6 +23,8 @@ public class UpdateUserProfileRequest {
     @NotNull
     private LocalDate graduationDate;
 
+    private LocalDate programEndDate;
+
     @NotBlank
     private String targetRole;
 }

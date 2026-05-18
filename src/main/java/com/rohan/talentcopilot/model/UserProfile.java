@@ -37,6 +37,7 @@ public class UserProfile {
 
     private String visaType;
     private LocalDate graduationDate;
+    private LocalDate programEndDate;
     private String targetRole;
 
     @CreationTimestamp

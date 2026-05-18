@@ -22,6 +22,8 @@ public class CreateUserProfileRequest {
     @NotNull
     private LocalDate graduationDate;
 
+    private LocalDate programEndDate;
+
     @NotBlank
     private String targetRole;
 }

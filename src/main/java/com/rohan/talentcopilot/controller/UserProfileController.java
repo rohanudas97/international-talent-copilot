@@ -1,9 +1,11 @@
 package com.rohan.talentcopilot.controller;
 
+import com.rohan.talentcopilot.dto.ActionPlanResponse;
 import com.rohan.talentcopilot.dto.CreateUserProfileRequest;
 import com.rohan.talentcopilot.dto.UpdateUserProfileRequest;
 import com.rohan.talentcopilot.model.ProfileStatus;
 import com.rohan.talentcopilot.model.UserProfile;
+import com.rohan.talentcopilot.service.ActionPlanService;
 import com.rohan.talentcopilot.service.UserProfileService;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -17,9 +19,11 @@ import java.util.List;
 public class UserProfileController {
 
     private final UserProfileService userProfileService;
+    private final ActionPlanService actionPlanService;
 
-    public UserProfileController(UserProfileService userProfileService) {
+    public UserProfileController(UserProfileService userProfileService, ActionPlanService actionPlanService) {
         this.userProfileService = userProfileService;
+        this.actionPlanService = actionPlanService;
     }
 
     @PostMapping
@@ -115,5 +119,12 @@ public class UserProfileController {
         String email = authentication.getName();
 
         return userProfileService.updateMyProfile(email, request);
+    }
+
+    @GetMapping("/me/action-plan")
+    public ActionPlanResponse getMyActionPlan(Authentication authentication) {
+        String email = authentication.getName();
+
+        return actionPlanService.getMyActionPlan(email);
     }
 }

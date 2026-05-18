@@ -10,6 +10,7 @@ import com.rohan.talentcopilot.repository.UserRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.rohan.talentcopilot.exception.ProfileNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 import com.rohan.talentcopilot.exception.DuplicateEmailException;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,7 @@ public class UserProfileService {
         profile.setEmail(request.getEmail());
         profile.setVisaType(request.getVisaType());
         profile.setGraduationDate(request.getGraduationDate());
+        profile.setProgramEndDate(resolveProgramEndDate(request.getProgramEndDate(), request.getGraduationDate()));
         profile.setTargetRole(request.getTargetRole());
         profile.setStatus(ProfileStatus.ACTIVE);
         return userProfileRepository.save(profile);
@@ -60,6 +62,7 @@ public class UserProfileService {
         profile.setEmail(request.getEmail());
         profile.setVisaType(request.getVisaType());
         profile.setGraduationDate(request.getGraduationDate());
+        profile.setProgramEndDate(resolveProgramEndDate(request.getProgramEndDate(), request.getGraduationDate()));
         profile.setTargetRole(request.getTargetRole());
 
         return userProfileRepository.save(profile);
@@ -141,6 +144,7 @@ public class UserProfileService {
         profile.setEmail(user.getEmail());
         profile.setVisaType(request.getVisaType());
         profile.setGraduationDate(request.getGraduationDate());
+        profile.setProgramEndDate(resolveProgramEndDate(request.getProgramEndDate(), request.getGraduationDate()));
         profile.setTargetRole(request.getTargetRole());
         profile.setStatus(ProfileStatus.ACTIVE);
         profile.setUser(user);
@@ -156,8 +160,13 @@ public class UserProfileService {
         profile.setEmail(email);
         profile.setVisaType(request.getVisaType());
         profile.setGraduationDate(request.getGraduationDate());
+        profile.setProgramEndDate(resolveProgramEndDate(request.getProgramEndDate(), request.getGraduationDate()));
         profile.setTargetRole(request.getTargetRole());
 
         return userProfileRepository.save(profile);
+    }
+
+    private LocalDate resolveProgramEndDate(LocalDate programEndDate, LocalDate graduationDate) {
+        return programEndDate != null ? programEndDate : graduationDate;
     }
 }
